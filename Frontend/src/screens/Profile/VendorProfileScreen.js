@@ -1,28 +1,33 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useCallback, useContext } from "react";
-import { Image, Text, TouchableOpacity, View, Alert } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { ProfileContext } from "../../context/ProfileContext";
+import { VendorProfileContext } from "../../context/VendorProfileContext";
 import globalStyles from "../../styles/globalStyles";
 
-export default function BuyerProfileScreen({ navigation }) {
-  const { profile, setProfile, refreshProfile } = useContext(ProfileContext);
+export default function VendorProfileScreen({ navigation }) {
+  const { vendorProfile, setVendorProfile, refreshVendorProfile } =
+    useContext(VendorProfileContext);
 
-  
   useFocusEffect(
     useCallback(() => {
-      if (typeof refreshProfile === "function") refreshProfile();
+      refreshVendorProfile().catch(() => {});
     }, [])
   );
 
   const logout = async () => {
     try {
+      await AsyncStorage.removeItem("vendorProfile");
       await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("role");
       await AsyncStorage.removeItem("profile");
+      await AsyncStorage.removeItem("user");
 
-      setProfile({
+      setVendorProfile({
         name: "",
         email: "",
+        district: "",
+        shopName: "",
         profileImage: null,
         role: "",
       });
@@ -33,34 +38,35 @@ export default function BuyerProfileScreen({ navigation }) {
       });
     } catch (error) {
       console.error("Error logging out:", error);
-      Alert.alert("Error", "Logout failed");
     }
   };
 
   return (
     <View style={globalStyles.container}>
       <View style={{ alignItems: "center", marginBottom: 20 }}>
-        <Text style={globalStyles.title}>
-          {profile?.name ? `${profile.name}'s Profile` : "My Profile"}
+        <Text style={[globalStyles.title, { textAlign: "center", marginBottom: 15 }]}>
+          {vendorProfile?.name ? `${vendorProfile.name} Profile` : "Vendor Profile"}
         </Text>
 
         <Image
           source={
-            profile?.profileImage
-              ? { uri: profile.profileImage }
+            vendorProfile?.profileImage
+              ? { uri: vendorProfile.profileImage }
               : require("../../../assets/defaultProfile.png")
           }
           style={{ width: 120, height: 120, borderRadius: 60 }}
         />
       </View>
 
-      <Text style={globalStyles.input}>Name: {profile?.name || "-"}</Text>
-      <Text style={globalStyles.input}>Email: {profile?.email || "-"}</Text>
-      <Text style={globalStyles.input}>Role: {profile?.role || "buyer"}</Text>
+      {/* show fallback "-" if empty */}
+      <Text style={globalStyles.input}>Name: {vendorProfile?.name || "-"}</Text>
+      <Text style={globalStyles.input}>Email: {vendorProfile?.email || "-"}</Text>
+      <Text style={globalStyles.input}>District: {vendorProfile?.district || "-"}</Text>
+      <Text style={globalStyles.input}>Shop Name: {vendorProfile?.shopName || "-"}</Text>
 
       <TouchableOpacity
         style={[globalStyles.button, { marginTop: 20 }]}
-        onPress={() => navigation.navigate("EditProfile")}
+        onPress={() => navigation.navigate("VendorEditProfile")}
       >
         <Text style={globalStyles.buttonText}>Edit Profile</Text>
       </TouchableOpacity>
