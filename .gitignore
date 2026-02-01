@@ -1,0 +1,64 @@
+
+# GENERAL & OS
+
+.DS_Store
+.apple_desktop
+Thumbs.db
+*.log
+*.pem
+.env
+.env*.local
+
+
+# NODE / DEPENDENCIES (Root and Subfolders)
+
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npm
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.tsbuildinfo
+
+
+# Frontend: React Native / Expo
+
+Frontend/.expo/
+Frontend/dist/
+Frontend/web-build/
+Frontend/expo-env.d.ts
+Frontend/.metro-health-check*
+Frontend/app-example/
+
+# Native Folders  
+Frontend/ios/
+Frontend/android/
+
+# Native Keys & Secrets
+Frontend/*.jks
+Frontend/*.p8
+Frontend/*.p12
+Frontend/*.key
+Frontend/*.mobileprovision
+Frontend/*.orig.*
+Frontend/.kotlin/
+
+
+# Backend: Express / Node.js
+
+Backend/.env
+Backend/dist/
+Backend/build/
+Backend/out/
+
+# If you use a database like SQLite for testing
+Backend/*.db
+Backend/*.sqlite
+
+# If you use tools like Nodemon
+Backend/.nodemoncheck
+
+Frontend/node_modules/
+Backend/node_modules/
