@@ -13,7 +13,7 @@ export default function AddSurplusScreen({ navigation }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
   const [discount, setDiscount] = useState("");
-  const [image, setImage] = useState(null); // base64
+  const [image, setImage] = useState(null); 
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -29,7 +29,7 @@ export default function AddSurplusScreen({ navigation }) {
     }
   };
 
-  // In AddSurplusScreen.js - update the addSurplusProduct function
+   
 const addSurplusProduct = async () => {
   if (!name || !price || !description || !quantity || !discount || !image) {
     alert("Please fill all fields and upload an image.");
@@ -39,7 +39,7 @@ const addSurplusProduct = async () => {
   try {
     await createProduct({
       name,
-      category: "Surplus", // ✅ ADD THIS
+      category: "Surplus",  
       price: Number(price),
       description,
       quantity: Number(quantity),
@@ -87,7 +87,7 @@ const addSurplusProduct = async () => {
   );
 }
 
-// ✅ keep your styles same
+ 
 const styles = StyleSheet.create({
   container: { padding: 20, backgroundColor: "#E6F4EA", paddingBottom: 40 },
   backBtn: { position: "absolute", top: 15, left: 10, zIndex: 10, padding: 6, backgroundColor: "#fff", borderRadius: 30, elevation: 3, shadowColor: "#000", shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4 },

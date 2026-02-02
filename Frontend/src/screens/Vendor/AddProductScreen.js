@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useContext, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useFocusEffect } from "@react-navigation/native"; // ✅ ADD
+import { useFocusEffect } from "@react-navigation/native"; 
 import { ProductContext } from "../../context/ProductContext";
 import { createProduct } from "../../services/products";
 
@@ -16,8 +16,7 @@ export default function AddProductScreen({ navigation }) {
   const [image, setImage] = useState(null);
 
   const [category, setCategory] = useState("Fruit");
-
-  // ✅ RESET FORM whenever screen is opened (focus)
+ 
   useFocusEffect(
     useCallback(() => {
       setName("");
@@ -65,7 +64,7 @@ export default function AddProductScreen({ navigation }) {
       await refreshProducts();
       alert(`${name} added successfully`);
 
-      // ✅ Clear immediately after success (extra safety)
+      
       setName("");
       setPrice("");
       setDescription("");
@@ -127,7 +126,7 @@ export default function AddProductScreen({ navigation }) {
   );
 }
 
-// ✅ styles unchanged
+ 
 const styles = StyleSheet.create({
   container: { padding: 20, backgroundColor: "#E6F4EA", paddingBottom: 40 },
   backBtn: { position: "absolute", top: 15, left: 10, zIndex: 10, padding: 6, backgroundColor: "#fff", borderRadius: 30, elevation: 3, shadowColor: "#000", shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4 },

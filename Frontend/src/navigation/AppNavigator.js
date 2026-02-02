@@ -34,7 +34,7 @@ import VendorChatListScreen from "../screens/Vendor/VendorChatListScreen";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Buyer Chat Stack 
+ 
 const BuyerChatStack = createStackNavigator();
 function BuyerChatNavigator() {
   return (
@@ -53,7 +53,7 @@ function BuyerChatNavigator() {
   );
 }
 
-// Vendor Chat Stack 
+  
 const VendorChatStack = createStackNavigator();
 function VendorChatNavigator() {
   return (
@@ -72,7 +72,7 @@ function VendorChatNavigator() {
   );
 }
 
-//Buyer Tabs
+ 
 function BuyerNavigator() {
   return (
     <Tab.Navigator
@@ -99,7 +99,7 @@ function BuyerNavigator() {
         name="Chat"
         component={BuyerChatNavigator}
         options={{
-          unmountOnBlur: true, // ✅ when user leaves Chat tab, reset stack
+          unmountOnBlur: true,
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
@@ -164,7 +164,7 @@ function VendorNavigator() {
   );
 }
 
-//Main Stack 
+ 
 export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
