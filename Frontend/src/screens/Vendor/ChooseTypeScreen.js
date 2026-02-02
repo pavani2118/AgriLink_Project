@@ -5,7 +5,7 @@ export default function ChooseTypeScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Select Product Type</Text>
 
-      {/* Fresh Product */}
+       
       <TouchableOpacity
         style={[styles.cardButton, styles.freshButton]}
         onPress={() => navigation.navigate("AddProduct")}
@@ -14,7 +14,7 @@ export default function ChooseTypeScreen({ navigation }) {
         <Text style={styles.cardText}>Fresh Product</Text>
       </TouchableOpacity>
 
-      {/* Surplus Product */}
+     
       <TouchableOpacity
         style={[styles.cardButton, styles.surplusButton]}
         onPress={() => navigation.navigate("AddSurplus")}
@@ -29,7 +29,7 @@ export default function ChooseTypeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E6F4EA", // soft green background
+    backgroundColor: "#E6F4EA",  
     padding: 24,
     justifyContent: "center",
   },
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 20,
     marginBottom: 20,
-    elevation: 5, // shadow for Android
-    shadowColor: "#000", // shadow for iOS
+    elevation: 5, 
+    shadowColor: "#000", 
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,

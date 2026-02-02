@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 
-import { addToCart } from "../../services/cart"; // ✅ ADD THIS
+import { addToCart } from "../../services/cart"; 
 
 export default function ItemDetailsScreen({ route, navigation }) {
   const { product } = route.params;
@@ -20,7 +20,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showDesc, setShowDesc] = useState(false);
-  const [saving, setSaving] = useState(false); // ✅ ADD
+  const [saving, setSaving] = useState(false); 
 
   const totalPrice = (Number(product?.price) || 0) * quantity;
 
@@ -34,8 +34,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
     setSaving(true);
 
     await addToCart(product.id, quantity);
-
-    // ✅ success message after adding
+ 
     Alert.alert("Added ✅", "Added to cart successfully");
   } catch (e) {
     Alert.alert("Error", e?.message || "Add to cart failed");
@@ -51,19 +50,19 @@ export default function ItemDetailsScreen({ route, navigation }) {
       contentContainerStyle={{ paddingBottom: 40 }}
       showsVerticalScrollIndicator={true}
     >
-      {/* ===== Back Button ===== */}
+    
       <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={28} color="#1f2937" />
       </TouchableOpacity>
 
-      {/* ===== Product Info Container ===== */}
+       
       <View style={styles.productContainer}>
-        {/* Product Image */}
+       
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Image source={{ uri: product?.image }} style={styles.productImage} />
         </TouchableOpacity>
 
-        {/* Product Info */}
+        
         <View style={styles.infoContainer}>
           <View style={styles.infoTopRow}>
             <Text style={styles.productTitle}>{product?.name}</Text>
@@ -90,7 +89,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
         </View>
       </View>
 
-      {/* ===== Quantity & Total ===== */}
+      
       <View style={styles.qtyContainer}>
         <Text style={styles.sectionTitle}>Quantity</Text>
         <View style={styles.qtyControls}>
@@ -111,7 +110,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
         <Text style={styles.totalValue}>Total: Rs. {totalPrice}</Text>
       </View>
 
-      {/* ===== Description ===== */}
+       
       <TouchableOpacity
         style={styles.descContainer}
         onPress={() => setShowDesc(!showDesc)}
@@ -125,7 +124,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
         {showDesc && <Text style={styles.descText}>{product?.description}</Text>}
       </TouchableOpacity>
 
-      {/* ===== Add to Cart ===== */}
+      
       <TouchableOpacity
         style={styles.actionButton}
         onPress={handleAddToCart}
@@ -148,7 +147,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
   );
 }
 
-/* ================= STYLES ================= */
+ 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#d0f0c0" },
 
@@ -269,7 +268,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  // ✅ fixed the typo "sheight" -> "height" (no UI change)
+  
   modalImage: { width: "90%", height: "70%", borderRadius: 16, resizeMode: "contain" },
   modalClose: { position: "absolute", top: 50, right: 20, zIndex: 10 },
   closeBtnText: { fontSize: 28, color: "#fff", fontWeight: "700" },
