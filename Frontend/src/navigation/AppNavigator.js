@@ -14,7 +14,7 @@ import CartScreen from "../screens/Buyer/CartScreen";
 import ChatListScreen from "../screens/Buyer/ChatListScreen";
 import ChatScreenBuyer from "../screens/Buyer/ChatScreen";
 import ItemDetailsScreen from "../screens/Buyer/ItemDetailsScreen";
-import PaymentScreen from "../screens/Buyer/PaymentScreen";
+//import PaymentScreen from "../screens/Buyer/PaymentScreen";
 import ProductListScreen from "../screens/Buyer/ProductListScreen";
 import SearchScreen from "../screens/Buyer/SearchScreen";
 import BuyerProfileScreen from "../screens/Profile/BuyerProfileScreen";
@@ -111,11 +111,11 @@ function BuyerNavigator() {
       />
 
      
-      <Tab.Screen
+      {/* <Tab.Screen
         name="ProductList"
         component={ProductListScreen}
         options={{ tabBarButton: () => null }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }
@@ -144,7 +144,7 @@ function VendorNavigator() {
       <Tab.Screen name="Chat" component={VendorChatNavigator} />
       <Tab.Screen name="Profile" component={VendorProfileScreen} />
 
-       
+{/*        
       <Tab.Screen
         name="AddProduct"
         component={AddProductScreen}
@@ -159,7 +159,7 @@ function VendorNavigator() {
         name="ChooseType"
         component={ChooseTypeScreen}
         options={{ tabBarButton: () => null }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }
@@ -184,7 +184,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Buyer" component={BuyerNavigator} />
       <Stack.Screen name="ItemDetails" component={ItemDetailsScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+      {/* <Stack.Screen name="PaymentScreen" component={PaymentScreen} /> */}
 
        
       <Stack.Screen name="Vendor" component={VendorNavigator} />

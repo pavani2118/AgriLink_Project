@@ -78,7 +78,7 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.centerContainer}>
         <View style={styles.card}>
           <Image
-            source={require("../../../assets/agrilinklogo.png")}
+            source={require("../../../assets/agrilinklogopng.png")}
             style={styles.logo}
           />
 
