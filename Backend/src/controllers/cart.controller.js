@@ -1,12 +1,15 @@
 const CartItem = require("../models/CartItem");
 const Product = require("../models/Product");
+const mongoose = require("mongoose");
 
 exports.add = async (req, res) => {
   try {
     const buyerId = req.user.id;
     const { productId, quantity } = req.body;
 
-    if (!productId) return res.status(400).json({ message: "productId is required" });
+    if (!productId) {
+      return res.status(400).json({ message: "productId is required" });
+    }
 
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Product not found" });
@@ -34,6 +37,7 @@ exports.add = async (req, res) => {
 exports.mine = async (req, res) => {
   try {
     const buyerId = req.user.id;
+
     const items = await CartItem.find({ buyer: buyerId })
       .populate("product")
       .sort({ createdAt: -1 });
@@ -49,10 +53,14 @@ exports.remove = async (req, res) => {
     const buyerId = req.user.id;
     const { id } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid cart item id" });
+    }
+
     const item = await CartItem.findOneAndDelete({ _id: id, buyer: buyerId });
     if (!item) return res.status(404).json({ message: "Cart item not found" });
 
-    return res.json({ message: "Removed" });
+    return res.json({ message: "Removed", id });
   } catch (e) {
     return res.status(500).json({ message: "Server error", error: e.message });
   }
