@@ -54,9 +54,27 @@ export default function BuyerProfileScreen({ navigation }) {
         />
       </View>
 
-      <Text style={globalStyles.input}>Name: {profile?.name || "-"}</Text>
-      <Text style={globalStyles.input}>Email: {profile?.email || "-"}</Text>
-      <Text style={globalStyles.input}>Role: {profile?.role || "buyer"}</Text>
+      <View style={globalStyles.input}>
+  <Text>
+    <Text style={globalStyles.inputhead}>Name: </Text>
+    {profile?.name || "-"}
+  </Text>
+</View>
+
+<View style={globalStyles.input}>
+  <Text>
+    <Text style={globalStyles.inputhead}>Email: </Text>
+    {profile?.email || "-"}
+  </Text>
+</View>
+
+<View style={globalStyles.input}>
+  <Text>
+    <Text style={globalStyles.inputhead}>Role: </Text>
+    {profile?.role || "buyer"}
+  </Text>
+</View>
+
 
       <TouchableOpacity
         style={[globalStyles.button, { marginTop: 20 }]}
@@ -66,7 +84,7 @@ export default function BuyerProfileScreen({ navigation }) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[globalStyles.button, { marginTop: 20, backgroundColor: "red" }]}
+        style={[globalStyles.button, { marginTop: 20, backgroundColor: "#da4333" }]}
         onPress={logout}
       >
         <Text style={globalStyles.buttonText}>Logout</Text>

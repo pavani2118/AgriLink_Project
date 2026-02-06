@@ -106,17 +106,25 @@ export default function SearchScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 12, backgroundColor: "#E9F0D6" },
-  headerRow: { position: "relative", alignItems: "center", marginBottom: 10 },
-  header: { fontSize: 26, fontWeight: "bold", color: "#2E7D32" },
+  // headerRow: { position: "relative", alignItems: "center", marginBottom: 10 },
+  headerRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: 12,
+},
+  header: { fontSize: 26, fontWeight: "800", color: "#2E7D32" },
   signupButton: {
     position: "absolute",
     right: 0,
-    backgroundColor: "#2E7D32",
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 20,
+    backgroundColor: "transparent",
+    borderColor: "#092b0b",
+    borderWidth: 2,
   },
-  signupButtonText: { color: "#FFF", fontSize: 11, fontWeight: "600" },
+  signupButtonText: { color: "#2E7D32", fontSize: 14, fontWeight: "700" },
   search: {
     backgroundColor: "#FFF",
     borderRadius: 10,
@@ -124,6 +132,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#DDD",
     marginBottom: 12,
+    color: "#555555", 
+    fontWeight:600,
   },
   categoryRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 12 },
   categoryText: {

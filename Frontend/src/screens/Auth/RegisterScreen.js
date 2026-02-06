@@ -64,7 +64,7 @@ export default function RegisterScreen({ navigation }) {
     <ImageBackground source={require("../../../assets/background.jpg")} style={styles.background}>
       <View style={styles.overlay} />
       <View style={styles.card}>
-        <Image source={require("../../../assets/agrilinklogo.png")} style={styles.logo} />
+        <Image source={require("../../../assets/agrilinklogopng.png")} style={styles.logo} />
         <Text style={styles.title}>AgriLink Register</Text>
 
         <TextInput

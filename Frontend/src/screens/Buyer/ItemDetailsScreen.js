@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
 
   productContainer: {
-    backgroundColor: "#ffe5d6ee",
+    backgroundColor: "#F9FBF7",
     borderRadius: 24,
     padding: 18,
     margin: 16,
@@ -188,11 +188,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    
   },
   productTitle: { fontSize: 28, fontWeight: "800", color: "#1f2937" },
   price: { fontSize: 24, fontWeight: "800", color: "#16a34a" },
 
-  soldBy: { fontSize: 16, color: "#4b5563", marginVertical: 6 },
+  soldBy: { fontSize: 16, color: "#4b5563", marginVertical: 6,fontWeight: "600", },
   vendorName: { fontWeight: "700", color: "#16a34a" },
 
   rowBetween: {
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   badge: {
-    backgroundColor: "#f97316",
+    backgroundColor: "#E67E22",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
   ratingText: { marginLeft: 6, color: "#4b5563", fontWeight: "700" },
 
   qtyContainer: {
-    backgroundColor: "#ffe5d6ee",
+    backgroundColor: "#F9FBF7",
     borderRadius: 20,
     padding: 16,
     marginHorizontal: 16,
@@ -225,13 +226,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 18, fontWeight: "700", marginBottom: 12 },
   qtyControls: { flexDirection: "row", alignItems: "center" },
-  qtyBtn: { backgroundColor: "#e5e7eb", paddingHorizontal: 16, paddingVertical: 6, borderRadius: 8 },
+  qtyBtn: { backgroundColor: "#d5e1d5", paddingHorizontal: 16, paddingVertical: 6, borderRadius: 8 },
   qtyBtnText: { fontSize: 24, fontWeight: "700" },
   qtyText: { marginHorizontal: 16, fontSize: 18, fontWeight: "700" },
   totalValue: { marginTop: 12, fontSize: 20, fontWeight: "800", color: "#16a34a" },
 
   descContainer: {
-    backgroundColor: "#ffe5d6ee",
+    backgroundColor: "#F9FBF7",
     borderRadius: 20,
     padding: 16,
     marginHorizontal: 16,
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
   descText: { marginTop: 12, fontSize: 15, lineHeight: 22 },
 
   actionButton: {
-    backgroundColor: "#22c55e",
+    backgroundColor: "#2E7D32",
     paddingVertical: 18,
     marginHorizontal: 16,
     borderRadius: 20,

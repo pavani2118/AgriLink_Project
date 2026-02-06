@@ -185,7 +185,7 @@ export default function CartScreen({ navigation }) {
 
         <View style={styles.buttonRow}>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#1976D2" }]}
+            style={[styles.button, { backgroundColor: "#20535D" }]}
             onPress={() => goToChat(p)}
             activeOpacity={0.8}
           >
@@ -193,7 +193,7 @@ export default function CartScreen({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#d32f2f" }]}
+            style={[styles.button, { backgroundColor: "#C0392B" }]}
             onPress={() => removeItem(item.id)}
             activeOpacity={0.8}
           >
@@ -270,14 +270,14 @@ export default function CartScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#E9F0D6", padding: 12 },
+  container: { flex: 1, backgroundColor: "#d0f0c0", padding: 12 },
   header: { fontSize: 26, fontWeight: "bold", color: "#2E7D32", marginBottom: 12 },
   empty: { textAlign: "center", marginTop: 60, color: "#777" },
 
   cardWrapper: {
     flex: 1,
     maxWidth: "48%",
-    backgroundColor: "#FFF",
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 10,
     margin: 6,
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "#DDD",
   },
-  totalText: { fontSize: 16, color: "#555" },
+  totalText: { fontSize: 16, color: "#151414" ,fontWeight: "bold"},
   totalPrice: { fontSize: 22, fontWeight: "bold", color: "#2E7D32", marginBottom: 12 },
 
   checkbox: {
