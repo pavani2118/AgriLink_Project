@@ -1,4 +1,4 @@
- 
+
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -65,7 +65,7 @@ exports.login = async (req, res) => {
     return res.json({
       message: "Login successful",
       token,
-      user: userSafe(user), 
+      user: userSafe(user), // includes district/shopName/profileImage
     });
   } catch (e) {
     return res.status(500).json({ message: "Server error", error: e.message });
