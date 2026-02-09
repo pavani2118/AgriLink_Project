@@ -1,6 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
+ import { Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { 
+  FlatList, 
+  KeyboardAvoidingView, 
+  Platform, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  View,
+  ActivityIndicator
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import ChatBubble from "../../components/ChatBubble";
 import globalStyles from "../../styles/globalStyles";
@@ -19,14 +29,14 @@ export default function ChatScreen({ route, navigation }) {
   const [threadId, setThreadId] = useState(threadIdFromList || null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ ensure profile has id (important after app restart)
+  
   useEffect(() => {
     if (!profile?.id && typeof refreshProfile === "function") {
       refreshProfile().catch(() => {});
     }
   }, [profile?.id]);
 
-  // ✅ open/create thread if coming from product (no threadId)
+   
   useEffect(() => {
     if (threadIdFromList) return;
     if (!productId || !profile?.id) return;
@@ -50,14 +60,14 @@ export default function ChatScreen({ route, navigation }) {
     try {
       setLoading(true);
 
-      // ✅ mark seen so list stops bold
+       
       markThreadSeen(threadId).catch(() => {});
 
       const msgRes = await getThreadMessages(threadId);
       const list = (msgRes?.messages || []).map((m) => ({
         id: String(m.id || m._id),
         text: m.text,
-        senderId: m.senderId, // ✅ keep backend field
+        senderId: m.senderId,  
         createdAt: m.createdAt,
       }));
 
@@ -82,7 +92,7 @@ export default function ChatScreen({ route, navigation }) {
 
     setInput("");
 
-    // ✅ optimistic message with senderId (matches ChatBubble)
+     
     const tempId = `temp-${Date.now()}`;
     setMessages((prev) => [
       ...prev,
@@ -99,57 +109,200 @@ export default function ChatScreen({ route, navigation }) {
   };
 
   return (
-    <View style={[styles.screen, globalStyles.container]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#2E7D32" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{vendorName}</Text>
-      </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={80}
+    >
 
+
+      {/* Messages List */}
       <FlatList
         data={messages}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <ChatBubble message={item} />}
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 10 }}
+        contentContainerStyle={styles.messagesList}
+        showsVerticalScrollIndicator={false}
+        inverted={false}
+        ListEmptyComponent={
+          !loading && (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyIcon}>💬</Text>
+              <Text style={styles.emptyText}>No messages yet</Text>
+              <Text style={styles.emptySubtext}>Start the conversation!</Text>
+            </View>
+          )
+        }
       />
 
-      <View style={styles.inputBox}>
-        <TextInput
-          style={{ flex: 1, paddingVertical: 8 }}
-          placeholder={loading ? "Loading..." : "Type a message..."}
-          value={input}
-          onChangeText={setInput}
-          editable={!loading}
-        />
-        <TouchableOpacity onPress={onSend} disabled={loading}>
-          <Ionicons name="send" size={28} color="#2E7D32" />
-        </TouchableOpacity>
+      {/* Input Area */}
+      <View style={styles.inputContainer}>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            value={input}
+            onChangeText={setInput}
+            placeholder={loading ? "Loading..." : "Type a message..."}
+            placeholderTextColor="#9CA3AF"
+            style={styles.input}
+            editable={!loading}
+            multiline
+            maxLength={1000}
+          />
+          
+          <TouchableOpacity 
+            style={[styles.sendButton, (!input.trim() || loading) && styles.sendButtonDisabled]} 
+            onPress={onSend} 
+            disabled={!input.trim() || loading}
+            activeOpacity={0.7}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Ionicons 
+                name="send" 
+                size={20} 
+                color={input.trim() ? "#FFFFFF" : "#9CA3AF"} 
+              />
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#E9F0D6" },
+  container: {
+    flex: 1,
+    backgroundColor: "#F8F9FA",
+  },
+
+  // Header Styles
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingBottom: 10,
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
+    backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderColor: "#DDD",
-    marginBottom: 10,
+    borderBottomColor: "#E5E7EB",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  headerTitle: { fontSize: 18, fontWeight: "bold", marginLeft: 10, color: "#2E7D32" },
-  inputBox: {
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F3F4F6",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1F2937",
+  },
+  statusContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#DDD",
-    borderRadius: 25,
+    marginTop: 2,
+  },
+  statusText: {
+    fontSize: 12,
+    color: "#6B7280",
+    marginLeft: 6,
+  },
+  headerSpacer: {
+    width: 40,
+  },
+
+  // Messages List
+  messagesList: {
+    padding: 16,
+    paddingBottom: 20,
+    flexGrow: 1,
+  },
+
+  // Empty State
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 100,
+  },
+  emptyIcon: {
+    fontSize: 64,
+    marginBottom: 12,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1F2937",
+    marginBottom: 6,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: "#6B7280",
+  },
+
+  // Input Container
+  inputContainer: {
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: "#FFF",
+    paddingVertical: 10,
+    paddingBottom: Platform.OS === "ios" ? 20 : 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    backgroundColor: "#F3F4F6",
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: "#1F2937",
+    maxHeight: 100,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  sendButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#22c55e",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
+    shadowColor: "#22c55e",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sendButtonDisabled: {
+    backgroundColor: "#E5E7EB",
+    shadowOpacity: 0,
+    elevation: 0,
   },
 });
