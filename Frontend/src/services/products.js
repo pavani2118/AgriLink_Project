@@ -1,5 +1,5 @@
- 
-import { apiGet, apiPost, apiDelete } from "./api";
+// src/services/products.js
+import { apiGet, apiPost, apiDelete, apiPut } from "./api";
 
 export const getAllProducts = async () => {
   console.log("Calling getAllProducts...");
@@ -26,5 +26,12 @@ export const deleteProduct = async (id) => {
   console.log("Deleting product:", id);
   const result = await apiDelete(`/api/products/${id}`);
   console.log("deleteProduct result:", result);
+  return result;
+};
+
+export const updateProduct = async (id, payload) => {
+  console.log("Updating product:", id, payload);
+  const result = await apiPut(`/api/products/${id}`, payload);
+  console.log("updateProduct result:", result);
   return result;
 };
