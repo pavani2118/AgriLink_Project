@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
 import { getMyProfile } from "../services/user";
 
@@ -15,7 +15,7 @@ export function ProfileProvider({ children }) {
     shopName: "",
   });
 
-  // ✅ load saved profile fast
+   
   useEffect(() => {
     (async () => {
       try {
@@ -25,12 +25,12 @@ export function ProfileProvider({ children }) {
     })();
   }, []);
 
-  // ✅ whenever profile changes, save BOTH keys (fixes screens reading "user")
+   
   useEffect(() => {
     (async () => {
       try {
         await AsyncStorage.setItem("profile", JSON.stringify(profile));
-        await AsyncStorage.setItem("user", JSON.stringify(profile)); // ✅ keep old screens working
+        await AsyncStorage.setItem("user", JSON.stringify(profile));  
       } catch {}
     })();
   }, [profile]);
@@ -55,14 +55,14 @@ export function ProfileProvider({ children }) {
 
       setProfile(next);
       await AsyncStorage.setItem("profile", JSON.stringify(next));
-      await AsyncStorage.setItem("user", JSON.stringify(next)); // ✅ keep in sync
+      await AsyncStorage.setItem("user", JSON.stringify(next));  
       return next;
     } catch {
       return null;
     }
   };
 
-  // ✅ fetch real data on mount
+  
   useEffect(() => {
     refreshProfile().catch(() => {});
   }, []);
