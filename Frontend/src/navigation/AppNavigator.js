@@ -4,12 +4,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 
-//Auth Screens    
+ 
 import LoginScreen from "../screens/Auth/LoginScreen";
 import RegisterScreen from "../screens/Auth/RegisterScreen";
 import WelcomeScreen from "../screens/Auth/WelcomeScreen";
 
-//Buyer Screens 
+ 
 import CartScreen from "../screens/Buyer/CartScreen";
 import ChatListScreen from "../screens/Buyer/ChatListScreen";
 import ChatScreenBuyer from "../screens/Buyer/ChatScreen";
@@ -19,8 +19,8 @@ import ProductListScreen from "../screens/Buyer/ProductListScreen";
 import SearchScreen from "../screens/Buyer/SearchScreen";
 import BuyerProfileScreen from "../screens/Profile/BuyerProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
-
-// Vendor Screens 
+import OrderHistoryScreen from "../screens/Profile/OrderHistoryScreen";
+ 
 import VendorEditProfileScreen from "../screens/Profile/VendorEditProfileScreen";
 import VendorProfileScreen from "../screens/Profile/VendorProfileScreen";
 import AddProductScreen from "../screens/Vendor/AddProductScreen";
@@ -28,13 +28,14 @@ import AddSurplusScreen from "../screens/Vendor/AddSurplusScreen";
 import ChatScreenVendor from "../screens/Vendor/ChatScreen";
 import ChooseTypeScreen from "../screens/Vendor/ChooseTypeScreen";
 import DashboardScreen from "../screens/Vendor/DashboardScreen";
+import EditProductScreen from "../screens/Vendor/EditProductScreen";
 import NotificationsScreen from "../screens/Vendor/NotificationsScreen";
 import VendorChatListScreen from "../screens/Vendor/VendorChatListScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
- 
+//Buyer Chat Stack Navigator
 const BuyerChatStack = createStackNavigator();
 function BuyerChatNavigator() {
   return (
@@ -53,7 +54,7 @@ function BuyerChatNavigator() {
   );
 }
 
-  
+ //Vendor Chat Stack Navigator
 const VendorChatStack = createStackNavigator();
 function VendorChatNavigator() {
   return (
@@ -72,7 +73,7 @@ function VendorChatNavigator() {
   );
 }
 
- 
+//Buyer Tab Navigator
 function BuyerNavigator() {
   return (
     <Tab.Navigator
@@ -88,18 +89,34 @@ function BuyerNavigator() {
         },
         tabBarActiveTintColor: "#2E7D32",
         tabBarInactiveTintColor: "gray",
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+          paddingHorizontal: 0,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          marginBottom: 2,
+        },
+        tabBarItemStyle: {
+          flex: 1,
+          paddingVertical: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        },
       })}
     >
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Profile" component={BuyerProfileScreen} />
 
-      
+       
       <Tab.Screen
         name="Chat"
         component={BuyerChatNavigator}
         options={{
-          unmountOnBlur: true,
+          unmountOnBlur: true,  
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
@@ -110,17 +127,20 @@ function BuyerNavigator() {
         })}
       />
 
-     
+      
       <Tab.Screen
         name="ProductList"
         component={ProductListScreen}
-        options={{ tabBarButton: () => null }}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },  
+        }}
       />
     </Tab.Navigator>
   );
 }
 
-// Vendor Tabs 
+ //Vendor Tab Navigator
 function VendorNavigator() {
   return (
     <Tab.Navigator
@@ -136,7 +156,22 @@ function VendorNavigator() {
         },
         tabBarActiveTintColor: "#2E7D32",
         tabBarInactiveTintColor: "gray",
-        tabBarStyle: { height: 60, paddingBottom: 5 },
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+          paddingHorizontal: 0,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          marginBottom: 2,
+        },
+        tabBarItemStyle: {
+          flex: 1,
+          paddingVertical: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        },
       })}
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
@@ -148,23 +183,32 @@ function VendorNavigator() {
       <Tab.Screen
         name="AddProduct"
         component={AddProductScreen}
-        options={{ tabBarButton: () => null }}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },  
+        }}
       />
       <Tab.Screen
         name="AddSurplus"
         component={AddSurplusScreen}
-        options={{ tabBarButton: () => null }}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },  
+        }}
       />
       <Tab.Screen
         name="ChooseType"
         component={ChooseTypeScreen}
-        options={{ tabBarButton: () => null }}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },  
+        }}
       />
     </Tab.Navigator>
   );
 }
 
- 
+ //Main Stack Navigator
 export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -180,10 +224,12 @@ export default function AppNavigator() {
         initialParams={{ preview: true }}
       />
 
-      
+       
       <Stack.Screen name="Buyer" component={BuyerNavigator} />
       <Stack.Screen name="ItemDetails" component={ItemDetailsScreen} />
+      <Stack.Screen name="EditProduct" component={EditProductScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
 
        

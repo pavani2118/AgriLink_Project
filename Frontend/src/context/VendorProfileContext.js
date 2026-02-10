@@ -1,4 +1,4 @@
-// Frontend/src/context/VendorProfileContext.js
+ 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
 import { getMyProfile } from "../services/user";
@@ -22,7 +22,7 @@ export const VendorProfileProvider = ({ children }) => {
 
       const res = await getMyProfile();
 
-      // ✅ SUPPORT BOTH API SHAPES:
+       
       // { user: {...} }  OR  { ...userFields }
       const u = res?.user || res || {};
 
@@ -37,7 +37,7 @@ export const VendorProfileProvider = ({ children }) => {
 
       setVendorProfile(next);
 
-      // ✅ Save locally so it loads fast next time
+       
       await AsyncStorage.setItem("vendorProfile", JSON.stringify(next));
 
       return next;
@@ -49,12 +49,12 @@ export const VendorProfileProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
-        // ✅ load local first (fast)
+         
         const saved = await AsyncStorage.getItem("vendorProfile");
         if (saved) setVendorProfile(JSON.parse(saved));
       } catch {}
 
-      // ✅ then refresh from DB (truth)
+       
       await refreshVendorProfile();
     })();
   }, []);

@@ -1,6 +1,7 @@
+// Frontend/src/services/api.js
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "http://192.168.8.143:5000";
+const BASE_URL = "http://localhost:5000";
 
 const buildHeaders = async () => {
   const token = await AsyncStorage.getItem("token");
@@ -95,31 +96,5 @@ export const apiPut = async (path, body) => {
   }
 
   console.log("✅ PUT", path, "success:", data);
-  return data;
-};
-
-
-export const apiDelete = async (path) => {
-  const headers = await buildHeaders();
-  console.log("📤 DELETE", path);
-
-  let res;
-  try {
-    res = await fetch(`${BASE_URL}${path}`, {
-      method: "DELETE",
-      headers,
-    });
-  } catch (e) {
-    throw new Error("Network error: cannot reach backend (check IP/WiFi/firewall).");
-  }
-
-  const data = await safeJson(res);
-
-  if (!res.ok) {
-    console.log("❌ DELETE failed:", data);
-    throw new Error(data?.error || data?.message || `Request failed (${res.status})`);
-  }
-
-  console.log("✅ DELETE", path, "success:", data);
   return data;
 };

@@ -1,11 +1,18 @@
-// ==============================
-// Frontend/src/screens/Vendor/VendorEditProfileScreen.js
-// (Same UI; shows logged-in vendor details; Save updates DB; image stored base64)
-// ==============================
-import { Ionicons } from "@expo/vector-icons";
+ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useContext, useEffect, useState } from "react";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { 
+  Image, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  View,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform
+} from "react-native";
 import { VendorProfileContext } from "../../context/VendorProfileContext";
 import globalStyles from "../../styles/globalStyles";
 import { updateMyProfile } from "../../services/user";
@@ -21,8 +28,9 @@ export default function VendorEditProfileScreen({ navigation }) {
   const [shopName, setShopName] = useState(vendorProfile.shopName || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  
+   
   useEffect(() => {
     setProfileImage(vendorProfile.profileImage);
     setFullName(vendorProfile.name || "");
@@ -46,13 +54,29 @@ export default function VendorEditProfileScreen({ navigation }) {
     }
   };
 
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
   const saveChanges = async () => {
     if (password && password !== confirmPassword) {
-      alert("Passwords do not match!");
+      Alert.alert("Password Mismatch", "Passwords do not match!");
+      return;
+    }
+
+    if (!fullName.trim()) {
+      Alert.alert("Validation Error", "Please enter your full name");
+      return;
+    }
+
+    if (!email.trim()) {
+      Alert.alert("Validation Error", "Please enter your email");
       return;
     }
 
     try {
+      setIsSaving(true);
+
       const payload = {
         name: fullName,
         email,
@@ -76,97 +100,388 @@ export default function VendorEditProfileScreen({ navigation }) {
 
       setVendorProfile(next);
 
-     
+      // ensure latest from DB
       await refreshVendorProfile().catch(() => {});
 
-      alert("Vendor profile updated!");
-      navigation.navigate("Vendor", { screen: "Profile" }); // ✅ unchanged
+       
+      Alert.alert("Success", "Vendor profile updated successfully!", [
+        {
+          text: "OK",
+          onPress: () => {
+            navigation.navigate("Vendor", { screen: "Profile" });
+          },
+        },
+      ]);
     } catch (e) {
-      alert(e.message || "Update failed");
+      Alert.alert("Error", e.message || "Update failed");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
-    <View style={globalStyles.container}>
-      <View style={{ alignItems: "center", marginBottom: 30 }}>
-        <Text style={[globalStyles.title, { textAlign: "center", marginBottom: 15 }]}>
-          {vendorProfile.name ? `Edit ${vendorProfile.name} Profile` : "Edit Profile"}
-        </Text>
-
-        <View style={{ position: "relative" }}>
-          <Image
-            source={
-              profileImage
-                ? { uri: profileImage }
-                : require("../../../assets/defaultProfile.png")
-            }
-            style={{ width: 120, height: 120, borderRadius: 60 }}
-          />
-
-          <TouchableOpacity
-            onPress={pickImage}
-            style={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              backgroundColor: "#2E7D32",
-              borderRadius: 20,
-              padding: 6,
-            }}
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView 
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header with Back Button */}
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={handleGoBack}
+            activeOpacity={0.7}
           >
-            <Ionicons name="camera" size={20} color="white" />
+            <Ionicons name="arrow-back" size={24} color="#1F2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Edit Profile</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
+        {/* Profile Image Section */}
+        <View style={styles.imageSection}>
+          <View style={styles.imageWrapper}>
+            <Image
+              source={
+                profileImage
+                  ? { uri: profileImage }
+                  : require("../../../assets/defaultProfile.png")
+              }
+              style={styles.profileImage}
+            />
+            <View style={styles.imageBorder} />
+            
+            <TouchableOpacity
+              onPress={pickImage}
+              style={styles.cameraButton}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="camera" size={22} color="white" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.imageHint}>Tap to change photo</Text>
+        </View>
+
+        {/* Form Section */}
+        <View style={styles.formSection}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Full Name</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="person-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your full name"
+                placeholderTextColor="#9CA3AF"
+                value={fullName}
+                onChangeText={setFullName}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Email Address</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="mail-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                placeholderTextColor="#9CA3AF"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>District</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="location-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your district"
+                placeholderTextColor="#9CA3AF"
+                value={district}
+                onChangeText={setDistrict}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Shop Name</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="storefront-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your shop name"
+                placeholderTextColor="#9CA3AF"
+                value={shopName}
+                onChangeText={setShopName}
+              />
+            </View>
+          </View>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>Change Password (Optional)</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>New Password</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="lock-closed-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter new password"
+                placeholderTextColor="#9CA3AF"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Confirm Password</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="lock-closed-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm new password"
+                placeholderTextColor="#9CA3AF"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+            </View>
+          </View>
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonSection}>
+          <TouchableOpacity 
+            style={[styles.saveButton, isSaving && styles.saveButtonDisabled]} 
+            onPress={saveChanges}
+            disabled={isSaving}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.saveButtonText}>
+              {isSaving ? "Saving..." : "Save Changes"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.cancelButton} 
+            onPress={handleGoBack}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      <TextInput
-        style={globalStyles.input}
-        placeholder="Full Name"
-        placeholderTextColor="rgba(0,0,0,0.3)"
-        value={fullName}
-        onChangeText={setFullName}
-      />
-      <TextInput
-        style={globalStyles.input}
-        placeholder="Email"
-        placeholderTextColor="rgba(0,0,0,0.3)"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={globalStyles.input}
-        placeholder="District"
-        placeholderTextColor="rgba(0,0,0,0.3)"
-        value={district}
-        onChangeText={setDistrict}
-      />
-      <TextInput
-        style={globalStyles.input}
-        placeholder="Shop Name"
-        placeholderTextColor="rgba(0,0,0,0.3)"
-        value={shopName}
-        onChangeText={setShopName}
-      />
-      <TextInput
-        style={globalStyles.input}
-        placeholder="Password"
-        placeholderTextColor="rgba(0,0,0,0.3)"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={globalStyles.input}
-        placeholder="Confirm Password"
-        placeholderTextColor="rgba(0,0,0,0.3)"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-
-      <TouchableOpacity style={globalStyles.button} onPress={saveChanges}>
-        <Text style={globalStyles.buttonText}>Save Changes</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Bottom Spacing */}
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F8F9FA",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 100,
+  },
+
+  // Header Styles
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F3F4F6",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1F2937",
+  },
+  headerSpacer: {
+    width: 40,
+  },
+
+  // Image Section
+  imageSection: {
+    alignItems: "center",
+    paddingVertical: 24,
+    backgroundColor: "#FFFFFF",
+  },
+  imageWrapper: {
+    position: "relative",
+    marginBottom: 12,
+  },
+  profileImage: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    borderWidth: 4,
+    borderColor: "#FFFFFF",
+  },
+  imageBorder: {
+    position: "absolute",
+    width: 118,
+    height: 118,
+    borderRadius: 59,
+    borderWidth: 3,
+    borderColor: "#2E7D32",
+    top: -4,
+    left: -4,
+  },
+  cameraButton: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: "#2E7D32",
+    borderRadius: 24,
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 4,
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  imageHint: {
+    fontSize: 14,
+    color: "#6B7280",
+    fontWeight: "500",
+  },
+
+  // Form Section
+  formSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#374151",
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    paddingHorizontal: 14,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: "#1F2937",
+  },
+
+  // Divider
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#E5E7EB",
+  },
+  dividerText: {
+    paddingHorizontal: 12,
+    fontSize: 13,
+    color: "#6B7280",
+    fontWeight: "500",
+  },
+
+  // Button Section
+  buttonSection: {
+    paddingHorizontal: 16,
+    marginTop: 20,
+  },
+  saveButton: {
+    backgroundColor: "#2E7D32",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    shadowColor: "#2E7D32",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+    marginBottom: 10,
+  },
+  saveButtonDisabled: {
+    opacity: 0.6,
+  },
+  saveButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  cancelButton: {
+    backgroundColor: "#F3F4F6",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  cancelButtonText: {
+    color: "#6B7280",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  // Bottom Spacer
+  bottomSpacer: {
+    height: 20,
+  },
+});

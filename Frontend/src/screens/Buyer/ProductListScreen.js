@@ -45,23 +45,23 @@ export default function ProductListScreen({ navigation }) {
       style={styles.cardWrapper}
       onPress={() => navigation.navigate("ItemDetails", { product: item })}
     >
-      
+      {/* Product Image */}
       <Image source={{ uri: item.image }} style={styles.productImage} />
 
-      
+      {/* Name */}
       <Text style={styles.productName} numberOfLines={1}>
         {item.name}
       </Text>
 
-      
+      {/* Description */}
       <Text style={styles.productDesc} numberOfLines={2}>
         {item.description}
       </Text>
 
-      
+      {/* Quantity */}
       <Text style={styles.productQuantity}>{item.quantity}</Text>
 
-      
+      {/* Price */}
       <Text style={styles.productPrice}>Rs. {item.price}</Text>
     </TouchableOpacity>
   );
@@ -76,7 +76,7 @@ export default function ProductListScreen({ navigation }) {
       <FlatList
         data={products}
         keyExtractor={(item) => item.id}
-        numColumns={2} 
+        numColumns={2} // 2 cards per row
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 12 }}
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
 
   cardWrapper: {
     flex: 1,
-    maxWidth: "48%", 
+    maxWidth: "48%", // 2 cards per row
     margin: 6,
     backgroundColor: "#FFF",
     borderRadius: 12,
