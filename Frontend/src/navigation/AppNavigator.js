@@ -1,4 +1,4 @@
-
+ 
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -19,7 +19,6 @@ import ProductListScreen from "../screens/Buyer/ProductListScreen";
 import SearchScreen from "../screens/Buyer/SearchScreen";
 import BuyerProfileScreen from "../screens/Profile/BuyerProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
-import OrderHistoryScreen from "../screens/Profile/OrderHistoryScreen";
 
  
 import VendorEditProfileScreen from "../screens/Profile/VendorEditProfileScreen";
@@ -29,7 +28,6 @@ import AddSurplusScreen from "../screens/Vendor/AddSurplusScreen";
 import ChatScreenVendor from "../screens/Vendor/ChatScreen";
 import ChooseTypeScreen from "../screens/Vendor/ChooseTypeScreen";
 import DashboardScreen from "../screens/Vendor/DashboardScreen";
-import EditProductScreen from "../screens/Vendor/EditProductScreen";
 import NotificationsScreen from "../screens/Vendor/NotificationsScreen";
 import VendorChatListScreen from "../screens/Vendor/VendorChatListScreen";
 
@@ -73,6 +71,7 @@ function VendorChatNavigator() {
     </VendorChatStack.Navigator>
   );
 }
+
  
 function BuyerNavigator() {
   return (
@@ -116,7 +115,7 @@ function BuyerNavigator() {
         name="Chat"
         component={BuyerChatNavigator}
         options={{
-          unmountOnBlur: true, 
+          unmountOnBlur: true,  
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
@@ -127,7 +126,7 @@ function BuyerNavigator() {
         })}
       />
 
-       
+      
       <Tab.Screen
         name="ProductList"
         component={ProductListScreen}
@@ -139,6 +138,7 @@ function BuyerNavigator() {
     </Tab.Navigator>
   );
 }
+
  
 function VendorNavigator() {
   return (
@@ -184,7 +184,7 @@ function VendorNavigator() {
         component={AddProductScreen}
         options={{
           tabBarButton: () => null,
-          tabBarItemStyle: { display: "none" }, // ✅ IMPORTANT: removes tab slot
+          tabBarItemStyle: { display: "none" },  
         }}
       />
       <Tab.Screen
@@ -192,7 +192,7 @@ function VendorNavigator() {
         component={AddSurplusScreen}
         options={{
           tabBarButton: () => null,
-          tabBarItemStyle: { display: "none" }, // ✅ IMPORTANT: removes tab slot
+          tabBarItemStyle: { display: "none" },  
         }}
       />
       <Tab.Screen
@@ -200,7 +200,7 @@ function VendorNavigator() {
         component={ChooseTypeScreen}
         options={{
           tabBarButton: () => null,
-          tabBarItemStyle: { display: "none" }, // ✅ IMPORTANT: removes tab slot
+          tabBarItemStyle: { display: "none" },  
         }}
       />
     </Tab.Navigator>
@@ -211,27 +211,25 @@ function VendorNavigator() {
 export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* Public Flow */}
+      
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
 
-      {/* Buyer Search Preview */}
+       
       <Stack.Screen
         name="BuyerSearchPreview"
         component={SearchScreen}
         initialParams={{ preview: true }}
       />
 
-      {/* Buyer Flow */}
+       
       <Stack.Screen name="Buyer" component={BuyerNavigator} />
       <Stack.Screen name="ItemDetails" component={ItemDetailsScreen} />
-      <Stack.Screen name="EditProduct" component={EditProductScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-      <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
 
-      {/* Vendor Flow */}
+       
       <Stack.Screen name="Vendor" component={VendorNavigator} />
       <Stack.Screen
         name="VendorEditProfile"
