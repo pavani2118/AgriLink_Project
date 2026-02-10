@@ -94,7 +94,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#c7fdc9" />
       
-      
+      {/* Back Button */}
       <TouchableOpacity 
         style={styles.backButton} 
         onPress={() => navigation.goBack()}
@@ -107,7 +107,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        
+        {/* Product Image Card */}
         <View style={styles.imageCard}>
           <TouchableOpacity 
             onPress={() => setModalVisible(true)}
@@ -125,9 +125,9 @@ export default function ItemDetailsScreen({ route, navigation }) {
           </TouchableOpacity>
         </View>
 
-        
+        {/* Main Content Card */}
         <View style={styles.contentCard}>
-          
+          {/* Product Header */}
           <View style={styles.productHeader}>
             <View style={styles.titleContainer}>
               <Text style={styles.productName}>{productState?.name}</Text>
@@ -143,7 +143,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
             </View>
           </View>
 
-          
+          {/* Vendor Info */}
           <View style={styles.vendorBox}>
             <View style={styles.vendorIconContainer}>
               <Ionicons name="storefront" size={16} color="#2E7D32" />
@@ -154,7 +154,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
             </View>
           </View>
 
-          
+          {/* Freshness & Rating Row */}
           <View style={styles.metaRow}>
             <View style={styles.freshnessBadge}>
               <Ionicons name="leaf" size={11} color="#059669" />
@@ -171,10 +171,10 @@ export default function ItemDetailsScreen({ route, navigation }) {
             </View>
           </View>
 
-          
+          {/* Divider */}
           <View style={styles.divider} />
 
-          
+          {/* Quantity Section (Buyer Only) */}
           {isBuyer && (
             <View style={styles.quantitySection}>
               <View style={styles.quantityHeader}>
@@ -214,7 +214,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
             </View>
           )}
 
-          
+          {/* Total Amount (Buyer Only) */}
           {isBuyer && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total Amount</Text>
@@ -222,10 +222,10 @@ export default function ItemDetailsScreen({ route, navigation }) {
             </View>
           )}
 
-          
+          {/* Divider */}
           <View style={styles.divider} />
 
-          
+          {/* Description Accordion */}
           <TouchableOpacity
             onPress={() => setShowDesc(!showDesc)}
             activeOpacity={0.9}
@@ -250,7 +250,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
           </TouchableOpacity>
         </View>
 
-        
+        {/* Vendor Update Button */}
         {!isBuyer && role === "vendor" && (
           <View style={styles.vendorEditContainer}>
             <TouchableOpacity
@@ -264,11 +264,11 @@ export default function ItemDetailsScreen({ route, navigation }) {
           </View>
         )}
 
-        
+        {/* Spacer for fixed button */}
         <View style={{ height: 20 }} />
       </ScrollView>
 
-      
+      {/* Fixed Add to Cart Button */}
       {isBuyer && (
         <View style={styles.fixedButtonContainer}>
           <TouchableOpacity
@@ -285,7 +285,7 @@ export default function ItemDetailsScreen({ route, navigation }) {
         </View>
       )}
 
-      
+      {/* Image Zoom Modal */}
       <Modal visible={modalVisible} transparent={true} animationType="fade">
         <View style={styles.modalContainer}>
           <TouchableOpacity 
@@ -315,10 +315,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#c7fdc9"
   },
   scrollContent: { 
-    paddingBottom: 90,  
+    paddingBottom: 90, 
   },
 
-  
+  // Back Button
   backButton: {
     position: "absolute",
     top: 14,

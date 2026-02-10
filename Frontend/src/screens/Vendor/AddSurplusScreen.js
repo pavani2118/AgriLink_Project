@@ -27,7 +27,7 @@ export default function AddSurplusScreen({ navigation }) {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
- 
+  // ✅ RESET FORM whenever screen is opened (focus)
   useFocusEffect(
     useCallback(() => {
       setName("");

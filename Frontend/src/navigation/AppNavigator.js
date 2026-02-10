@@ -19,7 +19,7 @@ import ProductListScreen from "../screens/Buyer/ProductListScreen";
 import SearchScreen from "../screens/Buyer/SearchScreen";
 import BuyerProfileScreen from "../screens/Profile/BuyerProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
-
+import OrderHistoryScreen from "../screens/Profile/OrderHistoryScreen";
  
 import VendorEditProfileScreen from "../screens/Profile/VendorEditProfileScreen";
 import VendorProfileScreen from "../screens/Profile/VendorProfileScreen";
@@ -28,13 +28,14 @@ import AddSurplusScreen from "../screens/Vendor/AddSurplusScreen";
 import ChatScreenVendor from "../screens/Vendor/ChatScreen";
 import ChooseTypeScreen from "../screens/Vendor/ChooseTypeScreen";
 import DashboardScreen from "../screens/Vendor/DashboardScreen";
+import EditProductScreen from "../screens/Vendor/EditProductScreen";
 import NotificationsScreen from "../screens/Vendor/NotificationsScreen";
 import VendorChatListScreen from "../screens/Vendor/VendorChatListScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
- 
+//Buyer Chat Stack Navigator
 const BuyerChatStack = createStackNavigator();
 function BuyerChatNavigator() {
   return (
@@ -53,7 +54,7 @@ function BuyerChatNavigator() {
   );
 }
 
- 
+ //Vendor Chat Stack Navigator
 const VendorChatStack = createStackNavigator();
 function VendorChatNavigator() {
   return (
@@ -72,7 +73,7 @@ function VendorChatNavigator() {
   );
 }
 
- 
+//Buyer Tab Navigator
 function BuyerNavigator() {
   return (
     <Tab.Navigator
@@ -139,7 +140,7 @@ function BuyerNavigator() {
   );
 }
 
- 
+ //Vendor Tab Navigator
 function VendorNavigator() {
   return (
     <Tab.Navigator
@@ -207,7 +208,7 @@ function VendorNavigator() {
   );
 }
 
- 
+ //Main Stack Navigator
 export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -226,7 +227,9 @@ export default function AppNavigator() {
        
       <Stack.Screen name="Buyer" component={BuyerNavigator} />
       <Stack.Screen name="ItemDetails" component={ItemDetailsScreen} />
+      <Stack.Screen name="EditProduct" component={EditProductScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
 
        
