@@ -1,28 +1,33 @@
  import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useCallback, useContext } from "react";
-import { Image, Text, TouchableOpacity, View, Alert, StyleSheet, ScrollView } from "react-native";
+import { Image, Text, TouchableOpacity, View, StyleSheet, ScrollView, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { ProfileContext } from "../../context/ProfileContext";
+import { VendorProfileContext } from "../../context/VendorProfileContext";
 import globalStyles from "../../styles/globalStyles";
 
-export default function BuyerProfileScreen({ navigation }) {
-  const { profile, setProfile, refreshProfile } = useContext(ProfileContext);
+export default function VendorProfileScreen({ navigation }) {
+  const { vendorProfile, setVendorProfile, refreshVendorProfile } =
+    useContext(VendorProfileContext);
 
-   
   useFocusEffect(
     useCallback(() => {
-      if (typeof refreshProfile === "function") refreshProfile();
+      refreshVendorProfile().catch(() => {});
     }, [])
   );
 
   const logout = async () => {
     try {
+      await AsyncStorage.removeItem("vendorProfile");
       await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("role");
       await AsyncStorage.removeItem("profile");
+      await AsyncStorage.removeItem("user");
 
-      setProfile({
+      setVendorProfile({
         name: "",
         email: "",
+        district: "",
+        shopName: "",
         profileImage: null,
         role: "",
       });
@@ -51,17 +56,17 @@ export default function BuyerProfileScreen({ navigation }) {
           <View style={styles.avatarWrapper}>
             <Image
               source={
-                profile?.profileImage
-                  ? { uri: profile.profileImage }
+                vendorProfile?.profileImage
+                  ? { uri: vendorProfile.profileImage }
                   : require("../../../assets/defaultProfile.png")
               }
               style={styles.avatar}
             />
             <View style={styles.avatarBorder} />
           </View>
-          <Text style={styles.userName}>{profile?.name || "User"}</Text>
+          <Text style={styles.userName}>{vendorProfile?.name || "Vendor"}</Text>
           <View style={styles.roleBadge}>
-            <Text style={styles.roleText}>{profile?.role || "buyer"}</Text>
+            <Text style={styles.roleText}>Vendor</Text>
           </View>
         </View>
 
@@ -73,7 +78,7 @@ export default function BuyerProfileScreen({ navigation }) {
             </View>
             <View style={styles.infoContent}>
               <Text style={styles.infoLabel}>Full Name</Text>
-              <Text style={styles.infoValue}>{profile?.name || "Not set"}</Text>
+              <Text style={styles.infoValue}>{vendorProfile?.name || "Not set"}</Text>
             </View>
           </View>
 
@@ -84,19 +89,31 @@ export default function BuyerProfileScreen({ navigation }) {
             <View style={styles.infoContent}>
               <Text style={styles.infoLabel}>Email Address</Text>
               <Text style={styles.infoValue} numberOfLines={1}>
-                {profile?.email || "Not set"}
+                {vendorProfile?.email || "Not set"}
               </Text>
             </View>
           </View>
 
           <View style={styles.infoCard}>
             <View style={styles.infoIconContainer}>
-              <Text style={styles.infoIcon}>🛡️</Text>
+              <Text style={styles.infoIcon}>📍</Text>
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Account Type</Text>
+              <Text style={styles.infoLabel}>District</Text>
               <Text style={styles.infoValue}>
-                {profile?.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : "Buyer"}
+                {vendorProfile?.district || "Not set"}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.infoCard}>
+            <View style={styles.infoIconContainer}>
+              <Text style={styles.infoIcon}>🏪</Text>
+            </View>
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Shop Name</Text>
+              <Text style={styles.infoValue}>
+                {vendorProfile?.shopName || "Not set"}
               </Text>
             </View>
           </View>
@@ -107,24 +124,12 @@ export default function BuyerProfileScreen({ navigation }) {
       <View style={styles.actionsContainer}>
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => navigation.navigate("EditProfile")}
+          onPress={() => navigation.navigate("VendorEditProfile")}
           activeOpacity={0.8}
         >
           <View style={styles.buttonContent}>
             <Text style={styles.buttonIcon}>✏️</Text>
             <Text style={styles.primaryButtonText}>Edit Profile</Text>
-          </View>
-          <Text style={styles.buttonArrow}>›</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.primaryButton}
-          onPress={() => navigation.navigate("OrderHistory")}
-          activeOpacity={0.8}
-        >
-          <View style={styles.buttonContent}>
-            <Text style={styles.buttonIcon}>📦</Text>
-            <Text style={styles.primaryButtonText}>Order History</Text>
           </View>
           <Text style={styles.buttonArrow}>›</Text>
         </TouchableOpacity>

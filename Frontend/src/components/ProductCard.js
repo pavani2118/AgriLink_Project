@@ -1,4 +1,4 @@
-// src/components/ProductCard.js
+
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function ProductCard({ product, onPress }) {

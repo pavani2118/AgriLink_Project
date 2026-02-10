@@ -1,8 +1,18 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useContext, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useFocusEffect } from "@react-navigation/native"; // ✅ ADD
+import { 
+  Image, 
+  ScrollView, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  View,
+  Alert,
+  ActivityIndicator
+} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { ProductContext } from "../../context/ProductContext";
 import { createProduct } from "../../services/products";
 
@@ -14,10 +24,10 @@ export default function AddProductScreen({ navigation }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
   const [image, setImage] = useState(null);
-
   const [category, setCategory] = useState("Fruit");
+  const [loading, setLoading] = useState(false);
 
-  // ✅ RESET FORM whenever screen is opened (focus)
+   
   useFocusEffect(
     useCallback(() => {
       setName("");
@@ -46,11 +56,13 @@ export default function AddProductScreen({ navigation }) {
 
   const addProduct = async () => {
     if (!name || !price || !description || !quantity || !image) {
-      alert("Please fill all fields and upload an image.");
+      Alert.alert("Missing Information", "Please fill all fields and upload an image.");
       return;
     }
 
     try {
+      setLoading(true);
+      
       await createProduct({
         name,
         category,
@@ -63,85 +75,417 @@ export default function AddProductScreen({ navigation }) {
       });
 
       await refreshProducts();
-      alert(`${name} added successfully`);
-
-      // ✅ Clear immediately after success (extra safety)
-      setName("");
-      setPrice("");
-      setDescription("");
-      setQuantity("");
-      setImage(null);
-      setCategory("Fruit");
-
-      navigation.goBack();
+      
+      Alert.alert("Success", `${name} added successfully`, [
+        {
+          text: "OK",
+          onPress: () => {
+            
+            setName("");
+            setPrice("");
+            setDescription("");
+            setQuantity("");
+            setImage(null);
+            setCategory("Fruit");
+            
+            navigation.goBack();
+          }
+        }
+      ]);
     } catch (e) {
-      alert(e.message || "Add product failed");
+      Alert.alert("Error", e.message || "Add product failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-        <MaterialIcons name="arrow-back-ios" size={26} color="#2E7D32" />
-      </TouchableOpacity>
-
-      <Text style={styles.title}>Add Product</Text>
-
-      <TextInput style={styles.input} placeholder="Product Name" placeholderTextColor="#777" value={name} onChangeText={setName} />
-      <TextInput style={styles.input} placeholder="Price (Rs.)" placeholderTextColor="#777" value={price} onChangeText={setPrice} keyboardType="numeric" />
-      <TextInput style={[styles.input, { height: 80 }]} placeholder="Description" placeholderTextColor="#777" value={description} onChangeText={setDescription} multiline />
-      <TextInput style={styles.input} placeholder="Quantity (kg)" placeholderTextColor="#777" value={quantity} onChangeText={setQuantity} keyboardType="numeric" />
-
-      <Text style={styles.roleLabel}>Select Category</Text>
-      <View style={styles.roleRow}>
-        <TouchableOpacity style={styles.radioContainer} onPress={() => setCategory("Fruit")} activeOpacity={0.8}>
-          <View style={[styles.radioCircle, category === "Fruit" && styles.radioSelected]} />
-          <Text style={styles.radioText}>Fruit</Text>
+    <View style={styles.screen}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color="#1F2937" />
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.radioContainer} onPress={() => setCategory("Vegetable")} activeOpacity={0.8}>
-          <View style={[styles.radioCircle, category === "Vegetable" && styles.radioSelected]} />
-          <Text style={styles.radioText}>Vegetable</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.radioContainer} onPress={() => setCategory("Grains")} activeOpacity={0.8}>
-          <View style={[styles.radioCircle, category === "Grains" && styles.radioSelected]} />
-          <Text style={styles.radioText}>Grains</Text>
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Add Fresh Product</Text>
+        <View style={styles.headerSpacer} />
       </View>
 
-      {image && (
-        <View style={styles.imagePreviewContainer}>
-          <Image source={{ uri: image }} style={styles.imagePreview} />
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.container} 
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Product Image Upload */}
+        <View style={styles.imageSection}>
+          <TouchableOpacity 
+            style={styles.imageUploadContainer}
+            onPress={pickImage}
+            activeOpacity={0.8}
+          >
+            {image ? (
+              <Image source={{ uri: image }} style={styles.imagePreview} />
+            ) : (
+              <View style={styles.imagePlaceholder}>
+                <Ionicons name="camera-outline" size={48} color="#9CA3AF" />
+                <Text style={styles.imagePlaceholderText}>Upload Product Image</Text>
+              </View>
+            )}
+            
+            <View style={styles.cameraIconBadge}>
+              <Ionicons name="camera" size={20} color="#FFFFFF" />
+            </View>
+          </TouchableOpacity>
         </View>
-      )}
 
-      <TouchableOpacity style={[styles.button, styles.uploadButton]} onPress={pickImage}>
-        <Text style={styles.buttonText}>Upload Product Image</Text>
-      </TouchableOpacity>
+        {/* Form Section */}
+        <View style={styles.formSection}>
+          {/* Product Name */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Product Name</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="pricetag-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter product name"
+                placeholderTextColor="#9CA3AF"
+                value={name}
+                onChangeText={setName}
+              />
+            </View>
+          </View>
 
-      <TouchableOpacity style={styles.button} onPress={addProduct}>
-        <Text style={styles.buttonText}>Add Product</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          {/* Category Selection */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Category</Text>
+            <View style={styles.categoryRow}>
+              {["Fruit", "Vegetable", "Grains"].map((cat) => (
+                <TouchableOpacity
+                  key={cat}
+                  style={[
+                    styles.categoryButton,
+                    category === cat && styles.categoryButtonActive
+                  ]}
+                  onPress={() => setCategory(cat)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[
+                    styles.categoryCircle,
+                    category === cat && styles.categoryCircleActive
+                  ]} />
+                  <Text style={[
+                    styles.categoryText,
+                    category === cat && styles.categoryTextActive
+                  ]}>
+                    {cat}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {/* Price and Quantity Row */}
+          <View style={styles.rowInputs}>
+            <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+              <Text style={styles.inputLabel}>Price (Rs.)</Text>
+              <View style={styles.inputContainer}>
+                <Text style={styles.currencySymbol}>Rs.</Text>
+                <TextInput
+                  style={[styles.input, { paddingLeft: 0 }]}
+                  placeholder="0.00"
+                  placeholderTextColor="#9CA3AF"
+                  value={price}
+                  onChangeText={setPrice}
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+
+            <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
+              <Text style={styles.inputLabel}>Quantity (kg)</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons name="scale-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="0"
+                  placeholderTextColor="#9CA3AF"
+                  value={quantity}
+                  onChangeText={setQuantity}
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Description */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Description</Text>
+            <View style={[styles.inputContainer, styles.textAreaContainer]}>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Enter product description..."
+                placeholderTextColor="#9CA3AF"
+                value={description}
+                onChangeText={setDescription}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+            </View>
+          </View>
+        </View>
+
+        {/* Add Button */}
+        <TouchableOpacity 
+          style={[styles.addButton, loading && styles.addButtonDisabled]}
+          onPress={addProduct}
+          disabled={loading}
+          activeOpacity={0.8}
+        >
+          {loading ? (
+            <ActivityIndicator color="#FFFFFF" />
+          ) : (
+            <>
+              <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
+              <Text style={styles.addButtonText}>Add Product</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* Bottom Spacing */}
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+    </View>
   );
 }
 
-// ✅ styles unchanged
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#E6F4EA", paddingBottom: 40 },
-  backBtn: { position: "absolute", top: 15, left: 10, zIndex: 10, padding: 6, backgroundColor: "#fff", borderRadius: 30, elevation: 3, shadowColor: "#000", shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4 },
-  title: { fontSize: 28, fontWeight: "800", color: "#1f2937", marginBottom: 30, textAlign: "center", marginTop: 10 },
-  input: { backgroundColor: "#fff", padding: 16, borderRadius: 16, marginBottom: 16, fontSize: 16, elevation: 3, shadowColor: "#000", shadowOpacity: 0.05, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4 },
-  roleLabel: { fontWeight: "700", marginBottom: 8, color: "#1f2937" },
-  roleRow: { flexDirection: "row", justifyContent: "flex-start", gap: 14, marginBottom: 16 },
-  radioContainer: { flexDirection: "row", alignItems: "center" },
-  radioCircle: { height: 18, width: 18, borderRadius: 9, borderWidth: 2, borderColor: "#2E7D32", marginRight: 6 },
-  radioSelected: { backgroundColor: "#2E7D32" },
-  radioText: { fontWeight: "700", color: "#333" },
-  imagePreviewContainer: { alignItems: "center", marginBottom: 20 },
-  imagePreview: { width: 180, height: 180, borderRadius: 16 },
-  button: { backgroundColor: "#22c55e", paddingVertical: 16, borderRadius: 20, alignItems: "center", marginBottom: 16, elevation: 3, shadowColor: "#000", shadowOpacity: 0.1, shadowOffset: { width: 0, height: 4 }, shadowRadius: 6 },
-  uploadButton: { backgroundColor: "#f97316" },
-  buttonText: { color: "#fff", fontSize: 18, fontWeight: "800" },
+  screen: {
+    flex: 1,
+    backgroundColor: "#F8F9FA",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  container: {
+    paddingBottom: 40,
+  },
+
+  // Header Styles
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F3F4F6",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1F2937",
+  },
+  headerSpacer: {
+    width: 40,
+  },
+
+  // Image Section
+  imageSection: {
+    alignItems: "center",
+    paddingVertical: 32,
+    backgroundColor: "#FFFFFF",
+  },
+  imageUploadContainer: {
+    position: "relative",
+    width: 200,
+    height: 200,
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  imagePreview: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  imagePlaceholder: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#F3F4F6",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#E5E7EB",
+    borderStyle: "dashed",
+    borderRadius: 20,
+  },
+  imagePlaceholderText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: "#6B7280",
+    fontWeight: "500",
+  },
+  cameraIconBadge: {
+    position: "absolute",
+    bottom: 12,
+    right: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#22c55e",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+
+  // Form Section
+  formSection: {
+    paddingHorizontal: 16,
+    paddingTop: 24,
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#374151",
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    paddingHorizontal: 14,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  currencySymbol: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#6B7280",
+    marginRight: 8,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: "#1F2937",
+  },
+  textAreaContainer: {
+    alignItems: "flex-start",
+    paddingVertical: 0,
+  },
+  textArea: {
+    paddingTop: 14,
+    paddingBottom: 14,
+    height: 100,
+  },
+
+  // Row Inputs
+  rowInputs: {
+    flexDirection: "row",
+  },
+
+  // Category Styles
+  categoryRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  categoryButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+  },
+  categoryButtonActive: {
+    backgroundColor: "#E8F5E9",
+    borderColor: "#2E7D32",
+  },
+  categoryCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: "#D1D5DB",
+    marginRight: 8,
+  },
+  categoryCircleActive: {
+    backgroundColor: "#2E7D32",
+    borderColor: "#2E7D32",
+  },
+  categoryText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#6B7280",
+  },
+  categoryTextActive: {
+    color: "#2E7D32",
+  },
+
+  // Add Button
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#22c55e",
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginTop: 32,
+    shadowColor: "#22c55e",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+    gap: 8,
+  },
+  addButtonDisabled: {
+    opacity: 0.6,
+  },
+  addButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  // Bottom Spacer
+  bottomSpacer: {
+    height: 20,
+  },
 });

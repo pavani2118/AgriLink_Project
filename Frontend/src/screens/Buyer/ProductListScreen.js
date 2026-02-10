@@ -1,4 +1,4 @@
-// src/screens/Buyer/ProductListScreen.js
+
 import React from "react";
 import {
   FlatList,
