@@ -1,4 +1,4 @@
- 
+  
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-   
+    // works with many token shapes
     const id = decoded?.id || decoded?.userId || decoded?._id;
 
     console.log("🔓 AUTH DECODED:", decoded);
@@ -26,7 +26,7 @@ module.exports = (req, res, next) => {
       return res.status(401).json({ message: "Invalid token payload (no user id)" });
     }
 
-    
+     
     req.userId = id;
     req.user = { id };
 

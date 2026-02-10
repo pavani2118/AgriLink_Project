@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
 } from "react-native";
 
 const { width, height } = Dimensions.get("window");
@@ -148,6 +149,10 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 50,
   },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.7)",
+  },
 
   // Logo Section
   logoContainer: {
@@ -219,6 +224,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     gap: 14,
     alignItems: "center",
+    marginBottom: 12,
   },
   benefitItem: {
     flexDirection: "row",
