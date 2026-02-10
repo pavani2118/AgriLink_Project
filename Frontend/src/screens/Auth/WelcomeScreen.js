@@ -1,9 +1,11 @@
-import React from "react";
-import { BlurView } from "expo-blur";
+import React, { useEffect, useRef } from "react";
 import {
+  Animated,
+  Dimensions,
   Image,
   ImageBackground,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,57 +13,122 @@ import {
   Dimensions,
 } from "react-native";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 export default function WelcomeScreen({ navigation }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+  const logoScale = useRef(new Animated.Value(0.8)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.spring(logoScale, {
+        toValue: 1,
+        friction: 4,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <ImageBackground
-      source={require("../../../assets/background.jpg")}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      {/* Blur + Dark Overlay */}
-      <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFillObject} />
-      <View
-        style={{
-          ...StyleSheet.absoluteFillObject,
-          backgroundColor: "rgba(0,0,0,0.3)",
-        }}
-      />
+    <>
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <ImageBackground
+        source={require("../../../assets/background.jpg")}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        {/* Gradient Overlay */}
+        <View style={styles.overlay} />
 
-      <SafeAreaView style={styles.container}>
-        {/* Logo at Top Center */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../../../assets/agrilinklogopng.png")}
-            style={styles.logo}
-          />
-        </View>
-
-        {/* Bottom Content */}
-        <View style={styles.bottomContent}>
-          <Text style={styles.tagline}>Connecting Farmers and Buyers Seamlessly</Text>
-
-          <Text style={styles.heading}>
-            Fresh & Local products.{"\n"}
-            <Text style={styles.subHeading}>Direct Vendor Communication.</Text>{"\n"}
-            <Text style={styles.subHeading}>Simple & Secure Purchasing.</Text>{"\n"}
-            <Text style={styles.zeroWaste}>Zero Waste.</Text>
-          </Text>
-
-          <Text style={styles.description}>
-            Discover fresh agricultural products directly from trusted vendors.Chat, explore & purchase with ease-all in one platform.
-          </Text>
-
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => navigation.navigate("BuyerSearchPreview", { preview: true })}
+        <SafeAreaView style={styles.container}>
+          {/* Animated Logo Section */}
+          <Animated.View
+            style={[
+              styles.logoContainer,
+              {
+                opacity: fadeAnim,
+                transform: [{ scale: logoScale }],
+              },
+            ]}
           >
-            <Text style={styles.primaryButtonText}>Get Started {"\u27A4"}</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+            <View style={styles.logoWrapper}>
+              <Image
+                source={require("../../../assets/agrilinklogo.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={styles.appName}>AgriLink</Text>
+          </Animated.View>
+
+          {/* Animated Bottom Content */}
+          <Animated.View
+            style={[
+              styles.bottomContent,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
+          >
+            <Text style={styles.tagline}>
+              Connecting Farmers & Buyers Seamlessly
+            </Text>
+
+            <Text style={styles.heading}>
+              Fresh & Local{"\n"}
+              <Text style={styles.headingSecondary}>Products.</Text>
+            </Text>
+
+            <View style={styles.benefitsList}>
+              <View style={styles.benefitItem}>
+                <View style={styles.benefitDot} />
+                <Text style={styles.benefitText}>Direct Vendor Communication</Text>
+              </View>
+              <View style={styles.benefitItem}>
+                <View style={styles.benefitDot} />
+                <Text style={styles.benefitText}>Simple & Secure Purchasing</Text>
+              </View>
+              <View style={styles.benefitItem}>
+                <View style={styles.benefitDotHighlight} />
+                <Text style={styles.benefitTextHighlight}>Zero Waste Initiative</Text>
+              </View>
+            </View>
+
+            <Text style={styles.description}>
+              Discover fresh agricultural products directly from trusted
+              vendors. Chat, explore & purchase with ease—all in one platform.
+            </Text>
+
+            {/* Get Started Button */}
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={() =>
+                navigation.navigate("BuyerSearchPreview", { preview: true })
+              }
+              activeOpacity={0.85}
+            >
+              <View style={styles.buttonContent}>
+                <Text style={styles.primaryButtonText}>Get Started</Text>
+                <Text style={styles.arrow}>→</Text>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
+        </SafeAreaView>
+      </ImageBackground>
+    </>
   );
 }
 
@@ -71,79 +138,161 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.65)",
+  },
   container: {
     flex: 1,
     justifyContent: "space-between",
     paddingHorizontal: 24,
-    paddingVertical: 40,
+    paddingTop: 60,
+    paddingBottom: 50,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.7)",
   },
 
-  /* Logo */
+  // Logo Section
   logoContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 40, // space from top
+  },
+  logoWrapper: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: "rgba(129, 199, 132, 0.3)",
+    shadowColor: "#81C784",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
   },
   logo: {
-    width: 180, // slightly bigger
-    height: 180,
-    resizeMode: "contain",
+    width: 100,
+    height: 100,
+  },
+  appName: {
+    color: "#FFFFFF",
+    fontSize: 32,
+    fontWeight: "800",
+    letterSpacing: 2,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
 
-  /* Bottom content */
+  // Bottom Content
   bottomContent: {
-    alignItems: "flex-start",
-    marginBottom: 40,
-    paddingLeft: 8,
+    alignItems: "center",
   },
+
   tagline: {
-    color: "#FFFFFF",
+    color: "#81C784",
     fontSize: 14,
-    marginBottom: 8,
-    fontWeight: "500",
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 1.5,
+    marginBottom: 16,
+    textAlign: "center",
   },
   heading: {
     color: "#FFFFFF",
-    fontSize: 28,
-    fontWeight: "700",
-    lineHeight: 36,
-    marginBottom: 12,
-  },
-  subHeading: {
-    fontWeight: "400",
-    color: "#FFFFFF",
-  },
-  zeroWaste: {
-    color: "#4CAF50", // brighter leaf green
-    fontWeight: "700",
-    fontStyle: "italic",
-  },
-  description: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 42,
+    fontWeight: "800",
     marginBottom: 24,
+    lineHeight: 50,
+    textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  headingSecondary: {
+    color: "#81C784",
   },
 
-  /* Buttons */
-  primaryButton: {
-    backgroundColor: "#2E7D32",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 30, // pill-shaped
-    width: width * 0.8, // 80% of screen width
-    alignSelf: "center",
+  // Benefits List
+  benefitsList: {
+    marginBottom: 24,
+    gap: 14,
     alignItems: "center",
     marginBottom: 12,
+  },
+  benefitItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  benefitDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#E0E0E0",
+    marginRight: 12,
+  },
+  benefitDotHighlight: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#81C784",
+    marginRight: 12,
+  },
+  benefitText: {
+    color: "#E8E8E8",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  benefitTextHighlight: {
+    color: "#81C784",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  description: {
+    color: "#CCCCCC",
+    fontSize: 15,
+    lineHeight: 24,
+    marginBottom: 36,
+    textAlign: "center",
+    paddingHorizontal: 10,
+  },
+
+  // Primary Button
+  primaryButton: {
+    width: "100%",
+    backgroundColor: "#2E7D32",
+    borderRadius: 14,
+    overflow: "hidden",
+    elevation: 8,
+    shadowColor: "#2E7D32",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 32,
+    gap: 10,
   },
   primaryButtonText: {
     color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: "800", // bold
-    letterSpacing: 1,
-    textTransform: "capitalize",
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  arrow: {
+    color: "#FFFFFF",
+    fontSize: 22,
+    fontWeight: "600",
   },
 });
