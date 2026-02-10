@@ -22,13 +22,6 @@ export default StyleSheet.create({
     marginBottom: 12,
     backgroundColor: colors.white,
   },
-  inputhead: {
-  color: "#555555", 
-  fontWeight: "600",
-  fontSize: 15,
-},
-
-  
   button: {
     backgroundColor: colors.primaryGreen,
     padding: 12,
