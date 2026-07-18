@@ -2,7 +2,7 @@
 
 # 🌱 AgriLink
 
-### Farm Fresh to Your Doorstep
+### Connecting Farmers and Buyers Seamlessly
 
 A modern mobile marketplace that connects buyers directly with local farmers and vendors — fresh vegetables, fruits, and surplus produce at unbeatable prices, with real-time chat, live order tracking, and secure payments.
 
@@ -68,30 +68,6 @@ Built for two types of users:
 - 🌗 **Dark & Light mode** with smooth theming
 - 💬 **Real-time chat** powered by Socket.io
 - 🔔 **Instant notifications** for both buyers and vendors
-- 📦 **Live order tracking** from pending → delivered
-- 💳 **Secure payments** via Stripe
-- ⭐ **Rating system** that boosts top vendors
-
-## 📸 Screenshots
-
-<div align="center">
-<table>
-<tr>
-<td align="center"><b>Home</b></td>
-<td align="center"><b>Product Details</b></td>
-<td align="center"><b>Cart</b></td>
-<td align="center"><b>Chat</b></td>
-</tr>
-<tr>
-<td><img src="./assets/screenshots/home.png" width="180"/></td>
-<td><img src="./assets/screenshots/product-details.png" width="180"/></td>
-<td><img src="./assets/screenshots/cart.png" width="180"/></td>
-<td><img src="./assets/screenshots/chat.png" width="180"/></td>
-</tr>
-</table>
-
-<sub>📌 Add your own screenshots to <code>assets/screenshots/</code> and update the paths above.</sub>
-</div>
 
 ## 🛠 Tech Stack
 
@@ -250,44 +226,10 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 | `orderStatusUpdate` | Server → Client | Notify of order status change |
 | `notification` | Server → Client | Push a real-time notification |
 
-## 🗺 Roadmap
-
-- [ ] Advanced sales analytics for vendors
-- [ ] Loyalty points & rewards program
-- [ ] Scheduled & express delivery slots
-- [ ] Multi-language support
-- [ ] Voice search
-- [ ] Social login (Google / Apple)
-
-## 🤝 Contributing
-
-Contributions are welcome! To get started:
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please open an issue first for major changes to discuss what you'd like to change.
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
-## 💬 Support
-
-If you run into issues or have questions:
-- 📘 Check [`INSTALLATION.md`](INSTALLATION.md) and [`FEATURES.md`](FEATURES.md)
-- 🐛 [Open an issue](../../issues)
-- ⭐ Star this repo if you find it useful!
-
----
-
 <div align="center">
 
 Built with ❤️ for fresh produce enthusiasts
 
-**🌱 AgriLink — Farm Fresh to Your Doorstep 🌱**
+**🌱 AgriLink — Connecting Farmers and Buyers Seamlessly 🌱**
 
 </div>
