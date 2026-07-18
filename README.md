@@ -241,21 +241,6 @@ npx react-native run-ios
 
 ---
 
-## 👩‍💻 My Contributions
-
-**Role:** Backend Developer
-
-- Developed REST APIs using Node.js and Express.js
-- Designed MongoDB database models and schema relationships
-- Implemented JWT-based authentication and authorization
-- Developed product and order management APIs
-- Integrated Socket.io for real-time buyer–vendor communication
-- Implemented request validation and backend security measures
-- Tested APIs using Postman
-- Collaborated with the team using Git and GitHub
-
----
-
 ## 🔐 Security Features
 
 - 🔒 Password encryption using bcrypt
@@ -288,6 +273,6 @@ University of Vavuniya
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** 
 
 ---
